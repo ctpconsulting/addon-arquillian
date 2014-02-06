@@ -6,6 +6,7 @@ import static org.jboss.forge.arquillian.ui.util.UiUtils.selectVersion;
 import javax.inject.Inject;
 
 import org.jboss.forge.addon.dependencies.Coordinate;
+import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
@@ -15,11 +16,13 @@ import org.jboss.forge.addon.ui.input.UISelectOne;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
+import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizard;
 import org.jboss.forge.arquillian.container.Container;
 import org.jboss.forge.arquillian.container.ContainerDirectoryParser;
+import org.jboss.forge.arquillian.facet.ArquillianFacetImpl;
 
 public class ArquillianSetupWizard extends AbstractArquillianCommand implements UIWizard {
 
@@ -39,6 +42,9 @@ public class ArquillianSetupWizard extends AbstractArquillianCommand implements 
 
     @Inject
     private ContainerDirectoryParser containerParser;
+
+    @Inject
+    private FacetFactory facetFactory;
 
     @Override
     public void initializeUI(UIBuilder builder) throws Exception {
@@ -67,7 +73,10 @@ public class ArquillianSetupWizard extends AbstractArquillianCommand implements 
 
     @Override
     public Result execute(UIExecutionContext context) throws Exception {
-        return null;
+        ArquillianFacetImpl facet = facetFactory.create(getSelectedProject(context), ArquillianFacetImpl.class);
+        facet.withArquillianVersion(arquillianVersion.getValue());
+        facetFactory.install(getSelectedProject(context), facet);
+        return Results.success();
     }
 
     @Override

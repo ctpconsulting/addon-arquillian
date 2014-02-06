@@ -5,6 +5,6 @@ import org.jboss.forge.arquillian.container.Container;
 
 public interface ArquillianFacet extends ProjectFacet {
 
-    Container container(String profileName);
+    Container getContainer(String profileName);
 
 }
